@@ -16,6 +16,44 @@ const submitAttendance = async (req,res)=>{
     })
 }
 
+const getAllAttendance = async (req,res) => {
+    db.query('SELECT attendance.id,nik,name,code,subject,class,starttime,endtime,day,attendtime, status, confirmed, pic_evidence FROM attendance INNER JOIN schedule ON schedule.id = attendance.scheduleid INNER JOIN subjects ON subjects.id = schedule.subjectid', (err,result)=>{
+        if(err){
+            console.log(err);
+            return res.status(400).send(createResponse(status.ERROR))
+        }
+        return res.status(200).send(result)
+    })
+}
+
+const getUserAttendance = async (req,res) => {
+    const nik = req.params.nik;
+    db.query('SELECT code,subject,class,starttime,endtime,day,attendtime, status, confirmed, pic_evidence FROM attendance INNER JOIN schedule ON schedule.id = attendance.scheduleid INNER JOIN subjects ON subjects.id = schedule.subjectid WHERE attendance.nik =?', [nik], (err,result)=>{
+        if(err){
+            console.log(err);
+            return res.status(400).send(createResponse(status.ERROR))
+        }
+        return res.status(200).send(result)
+    })
+}
+
+const updateAttendance = async (req,res) => {
+    const id = req.body.id;
+    const reason = req.body.reason;
+    console.log(reason)
+
+    db.query('UPDATE attendance SET confirmed=1, status=? WHERE id = ?',[reason,id],(err,result)=>{
+        if(err){
+            console.log(err);
+            return res.status(400).send(createResponse(status.ERROR))
+        }
+        return res.status(200).send(createResponse(status.SUCCESS))
+    })
+}
+
 module.exports ={
-    submitAttendance
+    submitAttendance,
+    getAllAttendance,
+    getUserAttendance,
+    updateAttendance
 }

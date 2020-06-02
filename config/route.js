@@ -46,7 +46,11 @@ router.get("/deleteSubject/:id",subjectScheme.deleteSubject);
 router.post("/addSchedule",scheduleScheme.addSchedule);
 router.get("/getDailySchedule/:day",scheduleScheme.getDailySchedule);
 router.get("/getTodaySchedule/:day",scheduleScheme.getTodaySchedule);
+router.get("/getUserSchedule/:id",scheduleScheme.getUserSchedule);
 
 router.post("/submitAttendance",uploadEvi.single('image'),attendanceScheme.submitAttendance);
+router.get("/getAllAttendance", attendanceScheme.getAllAttendance);
+router.get("/getUserAttendance/:nik", attendanceScheme.getUserAttendance);
+router.post("/updateAttendance", attendanceScheme.updateAttendance);
 
 module.exports = router;

@@ -2,13 +2,15 @@ const db = require('../config/dbconnection');
 const crypto = require('crypto');
 const {status,createResponse} = require('../config/const');
 
+
+// rute API untuk user login
 const login = async (req,res)=>{
     console.log(req.body);
     const userName = req.body.username;
     const password = req.body.password;
     const hashedPass = crypto.createHash('sha256').update(password).digest('hex');
 
-    db.query(`SELECT nik,name,type from users WHERE nik = ? AND password = ?`,[userName,hashedPass],(error,result)=>{
+    db.query(`SELECT id,nik,name,type from users WHERE nik = ? AND password = ?`,[userName,hashedPass],(error,result)=>{
         if(error){
             console.log(error);
             return res.status(400).send('error Occured');
@@ -19,6 +21,7 @@ const login = async (req,res)=>{
     })
 }
 
+// rute API untuk mengambil data user selain admin
 const getUser = async (req,res)=>{
     db.query(`SELECT id,nik,name,picture FROM users WHERE type<>'admin'`, (error,result)=>{
         if(error){
@@ -28,6 +31,7 @@ const getUser = async (req,res)=>{
     })
 }
 
+//mengambil data user dari id
 const getUserById = async (req,res)=>{
     const dataId = req.params.id;
     db.query(`SELECT id,nik,name FROM users WHERE id=?`,[dataId], (error,result)=>{
@@ -38,6 +42,7 @@ const getUserById = async (req,res)=>{
     })
 }
 
+//update data user
 const saveUser = async (req,res)=>{
     const id = req.body.id;
     const name = req.body.name;
@@ -51,12 +56,17 @@ const saveUser = async (req,res)=>{
     })
 }
 
+
+//menyimpan data user baru
 const addUser = async (req,res)=>{
     const name = req.body.name;
     const nik = req.body.nik;
     const images = req.body.picture;
 
-    db.query('INSERT INTO users (nik,name,picture) VALUES (?,?,?)',[nik,name,images],(err,result)=>{
+    const password = "12345" // set password semua user
+    const hashedPass = crypto.createHash('sha256').update(password).digest('hex');
+
+    db.query('INSERT INTO users (nik,name,picture,password) VALUES (?,?,?)',[nik,name,images,hashedPass],(err,result)=>{
         if(err){
             console.log(err);
             return res.status(400).send('Error Ocurred');

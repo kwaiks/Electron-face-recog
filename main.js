@@ -13,6 +13,7 @@ app.use(
   })
 )
 app.use(route);
+//membuat direktori publik
 app.use(express.static(__dirname+'/public'))
 
 http.listen(port,()=>{
